@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synapse — bouncing skill network</title>
+<style>
+  :root{
+    --bg:#08090d;
+    --bg-soft:#0e1016;
+    --line:#1b1f29;
+    --dev:#5ee0c0;
+    --dev-glow:rgba(94,224,192,0.55);
+    --game:#ff6f9c;
+    --game-glow:rgba(255,111,156,0.55);
+    --design:#ffb35e;
+    --design-glow:rgba(255,179,94,0.55);
+    --ink:#eef0f3;
+    --ink-dim:#7b8190;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:
+      radial-gradient(ellipse at 20% 10%, #11141c 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, #131019 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    overflow:hidden;
+  }
+  .topbar{
+    position:fixed; top:16px; left:16px; right:16px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+    z-index:20;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .brand b{color:var(--ink); font-weight:600;}
+  .legend{
+    display:flex; gap:18px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .legend span{display:flex; align-items:center; gap:7px;}
+  .dot{width:7px; height:7px; border-radius:50%;}
+  .dot.dev{background:var(--dev); box-shadow:0 0 8px var(--dev-glow);}
+  .dot.game{background:var(--game); box-shadow:0 0 8px var(--game-glow);}
+  .dot.design{background:var(--design); box-shadow:0 0 8px var(--design-glow);}
+
+  #frame{
+    position:fixed;
+    inset:0;
+  }
+  #lines{position:absolute; inset:0; pointer-events:none;}
+  .card{
+    position:absolute;
+    width:172px;
+    border-radius:14px;
+    background:linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border:1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding:14px 16px 16px;
+    cursor:default;
+    user-select:none;
+    will-change:transform;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .card .eyebrow{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    opacity:0.75;
+    margin-bottom:6px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .card .name{
+    font-size:16px;
+    font-weight:600;
+    line-height:1.25;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+  .card .role{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    line-height:1.4;
+  }
+  .card .pulse{
+    position:absolute;
+    top:14px; right:14px;
+    width:8px; height:8px;
+    border-radius:50%;
+  }
+  .card.dev{ border-color: rgba(94, 224, 192, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 15px rgba(94, 224, 192, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+  .card.dev .pulse{background:var(--dev); box-shadow:0 0 10px var(--dev-glow);}
+  .card.dev .eyebrow{color:var(--dev);}
+  .card.game{ border-color: rgba(255, 111, 156, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 15px rgba(255, 111, 156, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+  .card.game .pulse{background:var(--game); box-shadow:0 0 10px var(--game-glow);}
+  .card.game .eyebrow{color:var(--game);}
+  .card.design{ border-color: rgba(255, 179, 94, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 15px rgba(255, 179, 94, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+  .card.design .pulse{background:var(--design); box-shadow:0 0 10px var(--design-glow);}
+  .card.design .eyebrow{color:var(--design);}
+
+  .card.active{
+    z-index:10;
+    border-color:rgba(255,255,255,0.45) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transform: scale(1.03);
+  }
+
+  .pulse{
+    animation:breathe 2.4s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:.55; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.35);}
+  }
+
+  footer{
+    position:fixed; bottom:16px; left:16px; right:16px;
+    padding:12px 24px;
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    color:var(--ink-dim);
+    display:flex; justify-content:space-between;
+    z-index:20;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+  }
+  @media (max-width: 640px){
+    .legend{display:none;}
+    .topbar { top: 8px; left: 8px; right: 8px; padding: 10px 16px; }
+    .brand { font-size: 11px; }
+    footer { bottom: 8px; left: 8px; right: 8px; padding: 10px 16px; }
+    .card{width:138px; padding:10px 12px;}
+    .card .name{font-size:12px; margin-bottom: 2px;}
+    .card .role{font-size:9.5px;}
+    .card .eyebrow{font-size:8.5px; margin-bottom: 4px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><b>SYNAPSE</b> · skill network</div>
+  <div class="legend">
+    <span><i class="dot dev"></i>Dev</span>
+    <span><i class="dot game"></i>Game</span>
+    <span><i class="dot design"></i>Design</span>
+  </div>
+</div>
+
+<div id="frame">
+  <svg id="lines"></svg>
+</div>
+
+<footer>
+  <span>7 nodes · ring topology</span>
+  <span>collide to inspect</span>
+</footer>
+
+<script>
+(function(){
+  const frame = document.getElementById('frame');
+  const svg = document.getElementById('lines');
+
+  // ---- node data ---------------------------------------------------
+  // category sequence per spec: dev,dev,dev, game,game, design,design
+  // ring connections: 1-2, 2-3, 3-4, 4-5, 5-6, 6-7, 7-1
+  const nodeData = [
+    { cat:'dev',    eyebrow:'Dev · 01',    name:'Frontend Core',   role:'Three.js, WebGL rigs' },
+    { cat:'dev',    eyebrow:'Dev · 02',    name:'Build Pipeline',  role:'GLTF / GLB exporters' },
+    { cat:'dev',    eyebrow:'Dev · 03',    name:'Physics Engine',  role:'Collision & constraint solving' },
+    { cat:'game',   eyebrow:'Game · 04',   name:'Level Systems',   role:'Encounter & spawn logic' },
+    { cat:'game',   eyebrow:'Game · 05',   name:'Player Feel',     role:'Input, juice, feedback loops' },
+    { cat:'design', eyebrow:'Design · 06', name:'Interaction UI',  role:'Motion & component design' },
+    { cat:'design', eyebrow:'Design · 07', name:'Visual System',   role:'Type, color, identity' },
+  ];
+  const ringEdges = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0]];
+
+  let W = frame.clientWidth, H = frame.clientHeight;
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+
+  const nodes = nodeData.map((d, i) => {
+    const el = document.createElement('div');
+    el.className = 'card ' + d.cat;
+    el.innerHTML = `
+      <div class="pulse"></div>
+      <div class="eyebrow">${d.eyebrow}</div>
+      <div class="name">${d.name}</div>
+      <div class="role">${d.role}</div>
+    `;
+    frame.appendChild(el);
+
+    return {
+      el,
+      cat: d.cat,
+      w: 172, h: 92, // will be re-measured after layout
+      x: 0, y: 0,
+      vx: (Math.random() - 0.5) * 1.6,
+      vy: (Math.random() - 0.5) * 1.6,
+      r: 0,
+      id: i
+    };
+  });
+
+  function measure(){
+    nodes.forEach(n => {
+      n.w = n.el.offsetWidth;
+      n.h = n.el.offsetHeight;
+      n.r = Math.sqrt(n.w*n.w + n.h*n.h) / 2.15; // soft collision radius
+    });
+  }
+
+  function layoutInitial(){
+    // place in a rough circle so the ring is readable from frame 0
+    const cx = W/2, cy = H/2;
+    const R = Math.min(W, H) * 0.30;
+    nodes.forEach((n, i) => {
+      const a = (i / nodes.length) * Math.PI * 2 - Math.PI/2;
+      n.x = cx + Math.cos(a) * R - n.w/2;
+      n.y = cy + Math.sin(a) * R - n.h/2;
+    });
+  }
+
+  function clampInit(){
+    nodes.forEach(n => {
+      n.x = Math.max(8, Math.min(W - n.w - 8, n.x));
+      n.y = Math.max(8, Math.min(H - n.h - 8, n.y));
+    });
+  }
+
+  measure();
+  layoutInitial();
+  clampInit();
+
+  // ---- physics -------------------------------------------------------
+  const SPEED_FLOOR = 0.35;
+
+  function step(){
+    // integrate
+    nodes.forEach(n => {
+      if (n.dragging) return; // pointer owns position while dragging
+
+      n.x += n.vx;
+      n.y += n.vy;
+
+      if (n.x <= 6){ n.x = 6; n.vx = Math.abs(n.vx); }
+      if (n.x + n.w >= W - 6){ n.x = W - 6 - n.w; n.vx = -Math.abs(n.vx); }
+      if (n.y <= 6){ n.y = 6; n.vy = Math.abs(n.vy); }
+      if (n.y + n.h >= H - 6){ n.y = H - 6 - n.h; n.vy = -Math.abs(n.vy); }
+    });
+
+    // pairwise collision (circle approx, then push along normal)
+    for (let i = 0; i < nodes.length; i++){
+      for (let j = i+1; j < nodes.length; j++){
+        const a = nodes[i], b = nodes[j];
+        const acx = a.x + a.w/2, acy = a.y + a.h/2;
+        const bcx = b.x + b.w/2, bcy = b.y + b.h/2;
+        let dx = bcx - acx, dy = bcy - acy;
+        let dist = Math.sqrt(dx*dx + dy*dy) || 0.001;
+        const minDist = (a.r + b.r);
+        if (dist < minDist){
+          const overlap = (minDist - dist) / 2;
+          const nx = dx / dist, ny = dy / dist;
+
+          if (a.dragging){
+            // a is held in place; b gets pushed fully out
+            b.x += (nx * overlap * 2); b.y += (ny * overlap * 2);
+          } else if (b.dragging){
+            a.x -= (nx * overlap * 2); a.y -= (ny * overlap * 2);
+          } else {
+            a.x -= nx * overlap; a.y -= ny * overlap;
+            b.x += nx * overlap; b.y += ny * overlap;
+          }
+
+          // exchange velocity along normal (elastic-ish bounce)
+          const avn = a.vx*nx + a.vy*ny;
+          const bvn = b.vx*nx + b.vy*ny;
+          const diff = bvn - avn;
+          if (!a.dragging){ a.vx += diff * nx * 0.5; a.vy += diff * ny * 0.5; }
+          if (!b.dragging){ b.vx -= diff * nx * 0.5; b.vy -= diff * ny * 0.5; }
+
+          if (!a.dragging){
+            a.vx += (Math.random()-0.5)*0.05;
+            a.vy += (Math.random()-0.5)*0.05;
+          }
+        }
+      }
+    }
+
+    // keep a gentle minimum speed so nothing stalls
+    nodes.forEach(n => {
+      if (n.dragging) return;
+      const sp = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+      if (sp < SPEED_FLOOR){
+        const boost = SPEED_FLOOR / (sp || 0.001);
+        n.vx *= boost; n.vy *= boost;
+      }
+      const MAX = 2.6;
+      const sp2 = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+      if (sp2 > MAX){ n.vx *= MAX/sp2; n.vy *= MAX/sp2; }
+    });
+
+    nodes.forEach(n => {
+      n.el.style.transform = `translate3d(${n.x}px, ${n.y}px, 0)`;
+    });
+
+    drawLines();
+    requestAnimationFrame(step);
+  }
+
+  // ---- connection lines (svg, drawn as soft curves) -------------------
+  const NS = 'http://www.w3.org/2000/svg';
+  const defs = document.createElementNS(NS, 'defs');
+  svg.appendChild(defs);
+
+  const grad = document.createElementNS(NS, 'linearGradient');
+  grad.setAttribute('id', 'synapseGrad');
+  grad.innerHTML = `
+    <stop offset="0%" stop-color="#5ee0c0" stop-opacity="0.0"/>
+    <stop offset="50%" stop-color="#9fb4ff" stop-opacity="0.55"/>
+    <stop offset="100%" stop-color="#ff6f9c" stop-opacity="0.0"/>
+  `;
+  defs.appendChild(grad);
+
+  const edgePaths = ringEdges.map(() => {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('stroke', 'url(#synapseGrad)');
+    p.setAttribute('stroke-width', '1.4');
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(p);
+    return p;
+  });
+
+  // traveling pulse dots along each edge
+  const pulses = ringEdges.map(() => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('r', '2.6');
+    c.setAttribute('fill', '#eef0f3');
+    c.style.filter = 'drop-shadow(0 0 4px rgba(255,255,255,0.8))';
+    svg.appendChild(c);
+    return { el: c, t: Math.random() };
+  });
+
+  function drawLines(){
+    ringEdges.forEach((edge, idx) => {
+      const a = nodes[edge[0]], b = nodes[edge[1]];
+      const ax = a.x + a.w/2, ay = a.y + a.h/2;
+      const bx = b.x + b.w/2, by = b.y + b.h/2;
+      const mx = (ax+bx)/2, my = (ay+by)/2;
+      // slight curve perpendicular to the line, stable-ish via id hash
+      const dx = bx-ax, dy = by-ay;
+      const len = Math.sqrt(dx*dx+dy*dy) || 1;
+      const nx = -dy/len, ny = dx/len;
+      const bend = 18 * Math.sin(idx*1.7);
+      const cx = mx + nx*bend, cy = my + ny*bend;
+
+      edgePaths[idx].setAttribute('d', `M ${ax} ${ay} Q ${cx} ${cy} ${bx} ${by}`);
+
+      const p = pulses[idx];
+      p.t += 0.0035 + idx*0.0002;
+      if (p.t > 1) p.t -= 1;
+      const t = p.t;
+      const qx = (1-t)*(1-t)*ax + 2*(1-t)*t*cx + t*t*bx;
+      const qy = (1-t)*(1-t)*ay + 2*(1-t)*t*cy + t*t*by;
+      p.el.setAttribute('cx', qx);
+      p.el.setAttribute('cy', qy);
+    });
+  }
+
+  // ---- interaction: drag a card around, throw it on release -----------
+  nodes.forEach(n => {
+    n.el.style.cursor = 'grab';
+    let dragging = false;
+    let startPX = 0, startPY = 0, startX = 0, startY = 0;
+    let lastPX = 0, lastPY = 0, lastT = 0;
+    let vEstX = 0, vEstY = 0;
+
+    n.el.addEventListener('pointerdown', (e) => {
+      nodes.forEach(m => m.el.classList.remove('active'));
+      n.el.classList.add('active');
+
+      dragging = true;
+      n.dragging = true;
+      n.el.style.cursor = 'grabbing';
+      n.el.setPointerCapture(e.pointerId);
+
+      startPX = e.clientX; startPY = e.clientY;
+      startX = n.x; startY = n.y;
+      lastPX = e.clientX; lastPY = e.clientY;
+      lastT = performance.now();
+      vEstX = 0; vEstY = 0;
+      n.vx = 0; n.vy = 0;
+    });
+
+    n.el.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const now = performance.now();
+      const dt = Math.max(now - lastT, 1);
+
+      n.x = Math.max(6, Math.min(W - n.w - 6, startX + (e.clientX - startPX)));
+      n.y = Math.max(6, Math.min(H - n.h - 6, startY + (e.clientY - startPY)));
+
+      // velocity estimate from recent pointer motion, scaled to per-frame units
+      vEstX = (e.clientX - lastPX) / dt * 16;
+      vEstY = (e.clientY - lastPY) / dt * 16;
+
+      lastPX = e.clientX; lastPY = e.clientY; lastT = now;
+    });
+
+    function release(e){
+      if (!dragging) return;
+      dragging = false;
+      n.dragging = false;
+      n.el.style.cursor = 'grab';
+      try { n.el.releasePointerCapture(e.pointerId); } catch(err){}
+
+      // throw: hand off the drag velocity, clamp to keep it sane
+      const MAXV = 5.5;
+      n.vx = Math.max(-MAXV, Math.min(MAXV, vEstX));
+      n.vy = Math.max(-MAXV, Math.min(MAXV, vEstY));
+    }
+    n.el.addEventListener('pointerup', release);
+    n.el.addEventListener('pointercancel', release);
+  });
+
+  // ---- resize handling -------------------------------------------------
+  function onResize(){
+    const newW = frame.clientWidth, newH = frame.clientHeight;
+    nodes.forEach(n => {
+      n.x = Math.max(6, Math.min(newW - n.w - 6, n.x * (newW/W)));
+      n.y = Math.max(6, Math.min(newH - n.h - 6, n.y * (newH/H)));
+    });
+    W = newW; H = newH;
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+  }
+  window.addEventListener('resize', onResize);
+
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>

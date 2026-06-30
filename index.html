@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synapser Studio — Digital Atelier Lisbon</title>
+  <meta name="description"
+    content="Synapser Studio is a digital atelier in Lisbon where craft meets technology. Brand strategy, interface design, immersive motion, and engineering." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,600;1,700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-logo">
+      <div class="spinner loader-spinner">
+        <div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <span class="loader-text">SYNAPSER STUDIO</span>
+    </div>
+    <div class="loader-progress">
+      <div class="loader-bar" id="loaderBar"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="site-header">
+    <div class="header-logo" id="nav-home">
+      <div class="spinner logo-spinner">
+        <div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <div class="logo-text">
+        <span>SYNAPSER</span>
+        <span>STUDIO</span>
+      </div>
+    </div>
+
+    <nav class="header-nav">
+      <div class="nav-box">
+        <a href="#" class="nav-link active" data-page="homepage" id="navHomepage">
+          <span class="nav-num">001</span>/<span class="nav-label">HOMEPAGE</span>
+        </a>
+        <a href="#" class="nav-link" data-page="manifesto" id="navManifesto">
+          <span class="nav-num">002</span>/<span class="nav-label">MANIFESTO</span>
+        </a>
+        <a href="#" class="nav-link" data-page="archive" id="navArchive">
+          <span class="nav-num">003</span>/<span class="nav-label">ARCHIVE</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="header-right">
+      <button class="lang-btn" id="langToggle">PT</button>
+      <span class="header-divider">|</span>
+      <button class="sound-btn" id="soundToggle" title="Toggle sound">
+        <svg class="sound-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 7H7L12 3V17L7 13H3V7Z" stroke="#3a3835" stroke-width="1.4" fill="none" />
+          <path class="sound-wave-1" d="M14 7C14.8 7.8 15.3 8.8 15.3 10C15.3 11.2 14.8 12.2 14 13" stroke="#3a3835"
+            stroke-width="1.4" stroke-linecap="round" />
+          <path class="sound-wave-2" d="M16.5 5C17.9 6.4 18.7 8.1 18.7 10C18.7 11.9 17.9 13.6 16.5 15" stroke="#3a3835"
+            stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Footer EMAIL US -->
+  <div class="footer-email">
+    <a href="mailto:hello@synapserstudio.com">EMAIL US</a>
+  </div>
+
+  <!-- ======================== HOMEPAGE ======================== -->
+  <div id="page-homepage" class="page active">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-content">
+        <h1 class="hero-title" id="heroTitle">SYNAPSER</h1>
+      </div>
+      <div class="scroll-cta">SCROLL TO EXPLORE</div>
+    </section>
+
+    <!-- Manifesto Teaser -->
+    <section class="home-manifesto-section">
+      <div class="section-inner">
+        <p class="manifesto-label">OUR STORY</p>
+        <h2 class="manifesto-body">
+          FROM THE START, WE SOUGHT TO CREATE A SPACE WHERE WE COULD EXPLORE NEW IDEAS AND PUSH THE BOUNDARIES OF WHAT
+          IS POSSIBLE. WE OPERATE AS A DIGITAL ATELIER IN LISBON—A TAILORED STUDIO WHERE CRAFT MEETS TECHNOLOGY. WORKING
+          CLOSELY WITH AGENCIES, BRANDS, AND VISIONARIES, WE APPROACH EACH PROJECT WITH THE PRECISION AND CARE OF
+          TRADITIONAL CRAFTSMANSHIP, APPLIED TO CONTEMPORARY DIGITAL WORK.
+        </h2>
+      </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="home-video-section" id="homeVideoSection">
+      <div class="glass-wrapper" id="video-player-container">
+        <video id="video-player" class="home-video" src="zong.mp4" autoplay muted loop playsinline preload="auto"></video>
+        <button id="fullscreen-btn" title="Fullscreen">&#x26F6;</button>
+      </div>
+    </section>
+
+    <!-- Works Section -->
+    <section class="works-section" id="worksSection">
+      <div class="section-inner">
+        <h2 class="section-title">WORKS</h2>
+        <div class="works-track-wrapper">
+          <div class="works-track" id="worksTrack">
+            <div class="work-item" data-title="MONKEYS STUDIO" data-tags="Branding, Interface Design">
+              <div class="glass-wrapper">
+                <div class="work-thumb work-thumb-1">
+                  <span class="work-name">PEECEE</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-item" data-title="REPULSOR" data-tags="Motion, 3D">
+              <div class="glass-wrapper">
+                <div class="work-thumb work-thumb-2">
+                  <span class="work-name">REPULSOR</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-item active" data-title="ROTA DO NEVEIRO"
+              data-tags="Brand Strategy, Interface, Engineering">
+              <div class="glass-wrapper">
+                <div class="work-thumb work-thumb-3">
+                  <div class="work-thumb-overlay">
+                    <!-- <svg width="40" height="40" viewBox="0 0 40 40">
+                      <path d="M4 20 L20 4 L36 20" stroke="white" stroke-width="2.5" fill="none" />
+                      <path d="M4 30 L20 14 L36 30" stroke="white" stroke-width="2.5" fill="none" />
+                    </svg> -->
+                    <span class="work-name">ROTA DO<br>NEVEIRO</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="work-item" data-title="MOURATO" data-tags="Branding, Photography">
+              <div class="glass-wrapper">
+                <div class="work-thumb work-thumb-4">
+                  <span class="work-name">MOURATO</span>
+                </div>
+              </div>
+            </div>
+            <div class="work-item" data-title="EK STUDIO" data-tags="Interface Design, Development">
+              <div class="glass-wrapper">
+                <div class="work-thumb work-thumb-5">
+                  <span class="work-name">EK</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Work -->
+    <section class="featured-work-section" id="featuredWork">
+      <div class="featured-meta">
+        <span class="feat-category">Municipalities of Cadaval, Castanheira de Pera, and...</span>
+        <span class="feat-tags">Technical SEO, Performance, CMS Integration</span>
+      </div>
+      <h2 class="featured-title">ROTA DO NEVEIRO</h2>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section" id="servicesSection">
+      <div class="section-inner">
+        <h2 class="section-title">SERVICES</h2>
+        <div class="services-list">
+          <div class="service-item">
+            <div class="service-left">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="2" stroke="#3a3835" stroke-width="1.5" />
+                <path
+                  d="M12 2v3M12 19v3M2 12h3M19 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12"
+                  stroke="#3a3835" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span class="service-name">BRAND STRATEGY</span>
+            </div>
+            <span class="service-num">003//</span>
+          </div>
+          <div class="service-item">
+            <div class="service-left">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="8" height="8" rx="1" stroke="#3a3835" stroke-width="1.5" />
+                <rect x="13" y="3" width="8" height="8" rx="1" stroke="#3a3835" stroke-width="1.5" />
+                <rect x="3" y="13" width="8" height="8" rx="1" stroke="#3a3835" stroke-width="1.5" />
+                <rect x="13" y="13" width="8" height="8" rx="1" stroke="#3a3835" stroke-width="1.5" />
+              </svg>
+              <span class="service-name">INTERFACE DESIGN</span>
+            </div>
+            <span class="service-num">002//</span>
+          </div>
+          <div class="service-item">
+            <div class="service-left">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="#3a3835" stroke-width="1.5" />
+                <circle cx="12" cy="12" r="3" stroke="#3a3835" stroke-width="1.5" />
+                <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="#3a3835" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span class="service-name">IMMERSIVE &amp; MOTION</span>
+            </div>
+            <span class="service-num">003//</span>
+          </div>
+          <div class="service-item">
+            <div class="service-left">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none">
+                <polyline points="16 18 22 12 16 6" stroke="#3a3835" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" fill="none" />
+                <polyline points="8 6 2 12 8 18" stroke="#3a3835" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" fill="none" />
+              </svg>
+              <span class="service-name">ENGINEERING</span>
+            </div>
+            <span class="service-num">002//</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="cards-section" id="cardsSection">
+      <div class="section-inner">
+        <div class="cards-row">
+
+          <!-- Card 1 -->
+          <div class="card">
+            <svg class="img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="28" stroke="white" stroke-width="2" opacity="0.3" />
+              <circle cx="40" cy="40" r="10" stroke="white" stroke-width="2.5" />
+              <path d="M40 12v6M40 62v6M12 40h6M62 40h6M21 21l4 4M55 55l4 4M21 59l4-4M55 25l4-4" stroke="white"
+                stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <div class="textBox">
+              <p class="text head">BRAND STRATEGY</p>
+              <p class="text price">003//</p>
+              <span>Positioning & Identity Systems</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card">
+            <svg class="img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="12" width="24" height="24" rx="3" stroke="white" stroke-width="2.5" opacity="0.4" />
+              <rect x="44" y="12" width="24" height="24" rx="3" stroke="white" stroke-width="2.5" />
+              <rect x="12" y="44" width="24" height="24" rx="3" stroke="white" stroke-width="2.5" />
+              <rect x="44" y="44" width="24" height="24" rx="3" stroke="white" stroke-width="2.5" opacity="0.4" />
+            </svg>
+            <div class="textBox">
+              <p class="text head">INTERFACE DESIGN</p>
+              <p class="text price">002//</p>
+              <span>UI/UX & Product Design</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card">
+            <svg class="img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="28" stroke="white" stroke-width="2.5" />
+              <circle cx="40" cy="40" r="10" stroke="white" stroke-width="2" opacity="0.5" />
+              <path d="M40 12v8M40 60v8M12 40h8M60 40h8" stroke="white" stroke-width="2" stroke-linecap="round"
+                opacity="0.6" />
+              <path d="M28 28l6 6M46 46l6 6M28 52l6-6M46 28l6-6" stroke="white" stroke-width="1.5"
+                stroke-linecap="round" opacity="0.4" />
+            </svg>
+            <div class="textBox">
+              <p class="text head">IMMERSIVE & MOTION</p>
+              <p class="text price">003//</p>
+              <span>3D, Animation & Visual Effects</span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="card">
+            <svg class="img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="48 56 64 40 48 24" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <polyline points="32 24 16 40 32 56" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <line x1="45" y1="28" x2="35" y2="52" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                opacity="0.5" />
+            </svg>
+            <div class="textBox">
+              <p class="text head">ENGINEERING</p>
+              <p class="text price">002//</p>
+              <span>Web Dev & Software Build</span>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="card">
+            <svg class="img" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="14" y="20" width="52" height="36" rx="4" stroke="white" stroke-width="2.5" />
+              <path d="M28 32h24M28 40h16" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+              <circle cx="56" cy="56" r="10" fill="#313131" stroke="white" stroke-width="2" />
+              <path d="M52 56h8M56 52v8" stroke="white" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <div class="textBox">
+              <p class="text head">DIGITAL SIGNAGE</p>
+              <p class="text price">005//</p>
+              <span>Display & Content Systems</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Hire / Pricing Section -->
+    <section class="pricing-section" id="pricingSection">
+      <div class="section-inner">
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <div class="pricing-card-header">
+              <div class="pricing-dot"></div>
+              <h3 class="pricing-plan">HOURLY SESSION</h3>
+            </div>
+            <p class="pricing-desc">Flexible engagement for specific tasks, consulting, audits, or rapid sprints.</p>
+            <a href="mailto:hello@synapserstudio.com" class="hire-btn">HIRE US <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg></a>
+          </div>
+          <div class="pricing-card">
+            <div class="pricing-card-header">
+              <div class="pricing-dot"></div>
+              <h3 class="pricing-plan">RETAINER</h3>
+            </div>
+            <p class="pricing-desc">Dedicated design &amp; engineering resources for continuous product evolution.</p>
+            <a href="mailto:hello@synapserstudio.com" class="hire-btn">HIRE US <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg></a>
+          </div>
+          <div class="pricing-card pricing-card-dark">
+            <div class="pricing-card-header">
+              <div class="pricing-dot pricing-dot-light"></div>
+              <h3 class="pricing-plan">PROJECT BASED</h3>
+            </div>
+            <p class="pricing-desc">End-to-end execution. Full scope with defined deliverables and fixed timeline.</p>
+            <a href="mailto:hello@synapserstudio.com" class="hire-btn hire-btn-light">HIRE US <svg viewBox="0 0 16 16"
+                fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faqSection">
+      <div class="section-inner">
+        <div class="faq-layout">
+          <div class="faq-left">
+            <h2 class="faq-heading">ANSWER TO YOUR<br>QUESTIONS</h2>
+            <p class="faq-subtext">HOWEVER, WE RECOMMEND REACHING OUT TO US IF YOU HAVE ANY QUESTIONS.</p>
+            <p class="faq-pricing-q">Any question about the pricing? <a href="#">Book a call</a> &nbsp;<a
+                href="mailto:hello@synapserstudio.com">Email Us</a></p>
+          </div>
+          <div class="faq-right">
+            <div class="faq-item">
+              <button class="faq-question" id="faq1btn">
+                What kind of work does the studio actually do?
+                <span class="faq-arrow">&#8964;</span>
+              </button>
+              <div class="faq-answer" id="faq1">
+                <p>We design and build digital experiences — from brand identity and UI/UX to immersive 3D environments,
+                  motion design, and full-stack engineering. Our work spans websites, apps, interactive installations,
+                  and everything in between.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" id="faq2btn">
+                How does a project usually start?
+                <span class="faq-arrow">&#8964;</span>
+              </button>
+              <div class="faq-answer" id="faq2">
+                <p>It starts with a conversation. We listen to your goals, understand your audience, and map out the
+                  scope. From there we define a clear brief, timeline, and proposal before any work begins.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" id="faq3btn">
+                What happens if the result isn't quite what I expected?
+                <span class="faq-arrow">&#8964;</span>
+              </button>
+              <div class="faq-answer" id="faq3">
+                <p>We iterate together. Our process includes regular checkpoints and feedback loops to make sure the
+                  direction is aligned before we go deep. Revisions are part of the collaboration, not an exception.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" id="faq4btn">
+                Do you handle both design and development?
+                <span class="faq-arrow">&#8964;</span>
+              </button>
+              <div class="faq-answer" id="faq4">
+                <p>Yes — we're a full-service studio. We handle everything from strategy and design to front-end and
+                  back-end engineering. You get one unified team, not scattered freelancers.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" id="faq5btn">
+                How do you keep me in the loop during a project?
+                <span class="faq-arrow">&#8964;</span>
+              </button>
+              <div class="faq-answer" id="faq5">
+                <p>We use shared project boards, regular video calls, and async updates to keep you informed. You'll
+                  always know what we're working on, what's next, and how to give feedback.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end homepage -->
+
+
+  <!-- ======================== MANIFESTO ======================== -->
+  <div id="page-manifesto" class="page">
+
+    <section class="manifesto-section">
+      <div class="section-inner">
+
+        <div class="manifesto-block">
+          <p class="manifesto-label">OUR STORY</p>
+          <h2 class="manifesto-body">
+            FROM THE START, WE SOUGHT TO CREATE A SPACE WHERE WE COULD EXPLORE NEW IDEAS AND PUSH THE BOUNDARIES OF WHAT
+            IS POSSIBLE. WE OPERATE AS A DIGITAL ATELIER IN LISBON—A TAILORED STUDIO WHERE CRAFT MEETS TECHNOLOGY.
+            WORKING CLOSELY WITH AGENCIES, BRANDS, AND VISIONARIES, WE APPROACH EACH PROJECT WITH THE PRECISION AND CARE
+            OF TRADITIONAL CRAFTSMANSHIP, APPLIED TO CONTEMPORARY DIGITAL WORK.
+          </h2>
+        </div>
+
+        <div class="manifesto-block">
+          <p class="manifesto-label">OUR CAPABILITIES</p>
+          <h2 class="manifesto-caps">
+            3D, WEBSITE DESIGN, WEBSITE DEVELOPMENT, SOFTWARE DEVELOPMENT, PHOTOGRAMMETRY, BRANDING, VIDEO EDITING,
+            UI/UX DESIGN, DIGITAL SIGNAGE
+          </h2>
+        </div>
+
+        <div class="manifesto-contact-block">
+          <p class="manifesto-label">GET IN TOUCH</p>
+          <div class="manifesto-links">
+            <a href="mailto:hello@synapserstudio.com" class="manifesto-link">EMAIL US</a>
+            <a href="#" class="manifesto-link">BOOK A CALL</a>
+            <a href="#" class="manifesto-link">INSTAGRAM</a>
+            <a href="#" class="manifesto-link">BEHANCE</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- end manifesto -->
+
+
+  <!-- ======================== ARCHIVE ======================== -->
+  <div id="page-archive" class="page archive-page">
+
+    <!-- Archive Toolbar -->
+    <div class="archive-toolbar" id="archiveToolbar">
+      <!-- Network / List toggle -->
+      <button class="archive-view-btn active" id="archiveNetwork" title="Network view">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.5" fill="currentColor"/><circle cx="3" cy="4" r="2" fill="currentColor" opacity=".6"/><circle cx="17" cy="4" r="2" fill="currentColor" opacity=".6"/><circle cx="3" cy="16" r="2" fill="currentColor" opacity=".6"/><circle cx="17" cy="16" r="2" fill="currentColor" opacity=".6"/><line x1="10" y1="10" x2="3" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="17" y2="4" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="3" y2="16" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="10" x2="17" y2="16" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+      <button class="archive-view-btn" id="archiveListBtn" title="List view">
+        <svg viewBox="0 0 20 20">
+          <rect x="2" y="4" width="16" height="2" rx="1" fill="currentColor" />
+          <rect x="2" y="9" width="16" height="2" rx="1" fill="currentColor" />
+          <rect x="2" y="14" width="16" height="2" rx="1" fill="currentColor" />
+        </svg>
+      </button>
+      <!-- Category filters (visible in list mode) -->
+      <div class="archive-filters" id="archiveFilters">
+        <button class="arch-filter active" data-cat="all">ALL</button>
+        <button class="arch-filter" data-cat="game">GAME</button>
+        <button class="arch-filter" data-cat="design">DESIGN</button>
+        <button class="arch-filter" data-cat="code">CODE</button>
+      </div>
+    </div>
+
+    <!-- Neuron Network View -->
+    <div id="archiveNetwork-view">
+      <div id="arch-frame">
+        <svg id="arch-lines"></svg>
+      </div>
+      <div class="arch-legend">
+        <span><i class="arch-dot dev"></i>Dev / Code</span>
+        <span><i class="arch-dot game"></i>Game</span>
+        <span><i class="arch-dot design"></i>Design</span>
+      </div>
+    </div>
+
+    <!-- Archive List View -->
+    <div id="archiveListView" style="display:none;">
+      <div class="arch-list-inner">
+        <div class="arch-list-header">
+          <span>PROJECT</span>
+          <span>CATEGORY</span>
+          <span>YEAR</span>
+        </div>
+        <div class="arch-list-item" data-cat="design code">
+          <span class="ali-name">ROTA DO NEVEIRO</span>
+          <span class="ali-cat"><i class="arch-dot design"></i>Design &nbsp;<i class="arch-dot dev"></i>Code</span>
+          <span class="ali-year">2024</span>
+        </div>
+        <div class="arch-list-item" data-cat="design">
+          <span class="ali-name">MONKEYS STUDIO</span>
+          <span class="ali-cat"><i class="arch-dot design"></i>Design</span>
+          <span class="ali-year">2024</span>
+        </div>
+        <div class="arch-list-item" data-cat="game code">
+          <span class="ali-name">REPULSOR</span>
+          <span class="ali-cat"><i class="arch-dot game"></i>Game &nbsp;<i class="arch-dot dev"></i>Code</span>
+          <span class="ali-year">2023</span>
+        </div>
+        <div class="arch-list-item" data-cat="design">
+          <span class="ali-name">MOURATO</span>
+          <span class="ali-cat"><i class="arch-dot design"></i>Design</span>
+          <span class="ali-year">2023</span>
+        </div>
+        <div class="arch-list-item" data-cat="code design">
+          <span class="ali-name">EK STUDIO</span>
+          <span class="ali-cat"><i class="arch-dot dev"></i>Code &nbsp;<i class="arch-dot design"></i>Design</span>
+          <span class="ali-year">2023</span>
+        </div>
+        <div class="arch-list-item" data-cat="game">
+          <span class="ali-name">PEECEE</span>
+          <span class="ali-cat"><i class="arch-dot game"></i>Game</span>
+          <span class="ali-year">2023</span>
+        </div>
+        <div class="arch-list-item" data-cat="code">
+          <span class="ali-name">ROBOKI</span>
+          <span class="ali-cat"><i class="arch-dot dev"></i>Code</span>
+          <span class="ali-year">2022</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end archive -->
+
+  <script>
+  /* ---- Neuron-cards network for archive page ---- */
+  (function(){
+    function initNetwork(){
+      const frame = document.getElementById('arch-frame');
+      if (!frame) return;
+      const svg = document.getElementById('arch-lines');
+
+      const nodeData = [
+        { cat:'dev',    eyebrow:'Code · 01',    name:'ROTA DO NEVEIRO',  role:'Interface & Engineering' },
+        { cat:'dev',    eyebrow:'Code · 02',    name:'EK STUDIO',        role:'Interface, Development' },
+        { cat:'dev',    eyebrow:'Code · 03',    name:'ROBOKI',           role:'Software Build' },
+        { cat:'game',   eyebrow:'Game · 04',    name:'REPULSOR',         role:'Motion & 3D Physics' },
+        { cat:'game',   eyebrow:'Game · 05',    name:'PEECEE',           role:'Game Design & Code' },
+        { cat:'design', eyebrow:'Design · 06',  name:'MONKEYS STUDIO',   role:'Branding, Interface' },
+        { cat:'design', eyebrow:'Design · 07',  name:'MOURATO',          role:'Branding, Photography' },
+      ];
+      const ringEdges = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0]];
+
+      let W = frame.clientWidth, H = frame.clientHeight;
+      svg.setAttribute('width', W);
+      svg.setAttribute('height', H);
+
+      const nodes = nodeData.map((d) => {
+        const el = document.createElement('div');
+        el.className = 'arch-card ' + d.cat;
+        el.innerHTML = `
+          <div class="arch-pulse"></div>
+          <div class="arch-eyebrow">${d.eyebrow}</div>
+          <div class="arch-name">${d.name}</div>
+          <div class="arch-role">${d.role}</div>
+        `;
+        frame.appendChild(el);
+        return { el, cat: d.cat, w:172, h:92, x:0, y:0,
+          vx:(Math.random()-0.5)*1.6, vy:(Math.random()-0.5)*1.6, r:0 };
+      });
+
+      function measure(){
+        nodes.forEach(n => { n.w=n.el.offsetWidth; n.h=n.el.offsetHeight; n.r=Math.sqrt(n.w*n.w+n.h*n.h)/2.15; });
+      }
+      function layoutInitial(){
+        const cx=W/2, cy=H/2, R=Math.min(W,H)*0.30;
+        nodes.forEach((n,i) => {
+          const a=(i/nodes.length)*Math.PI*2-Math.PI/2;
+          n.x=cx+Math.cos(a)*R-n.w/2; n.y=cy+Math.sin(a)*R-n.h/2;
+        });
+      }
+      measure(); layoutInitial();
+      nodes.forEach(n => { n.x=Math.max(8,Math.min(W-n.w-8,n.x)); n.y=Math.max(8,Math.min(H-n.h-8,n.y)); });
+
+      const SPEED_FLOOR=0.35;
+      function step(){
+        nodes.forEach(n => {
+          if(n.dragging) return;
+          n.x+=n.vx; n.y+=n.vy;
+          if(n.x<=6){n.x=6; n.vx=Math.abs(n.vx);}
+          if(n.x+n.w>=W-6){n.x=W-6-n.w; n.vx=-Math.abs(n.vx);}
+          if(n.y<=6){n.y=6; n.vy=Math.abs(n.vy);}
+          if(n.y+n.h>=H-6){n.y=H-6-n.h; n.vy=-Math.abs(n.vy);}
+        });
+        for(let i=0;i<nodes.length;i++){
+          for(let j=i+1;j<nodes.length;j++){
+            const a=nodes[i],b=nodes[j];
+            const acx=a.x+a.w/2,acy=a.y+a.h/2,bcx=b.x+b.w/2,bcy=b.y+b.h/2;
+            let dx=bcx-acx,dy=bcy-acy,dist=Math.sqrt(dx*dx+dy*dy)||0.001;
+            const minDist=(a.r+b.r);
+            if(dist<minDist){
+              const overlap=(minDist-dist)/2,nx=dx/dist,ny=dy/dist;
+              if(a.dragging){b.x+=nx*overlap*2;b.y+=ny*overlap*2;}
+              else if(b.dragging){a.x-=nx*overlap*2;a.y-=ny*overlap*2;}
+              else{a.x-=nx*overlap;a.y-=ny*overlap;b.x+=nx*overlap;b.y+=ny*overlap;}
+              const avn=a.vx*nx+a.vy*ny,bvn=b.vx*nx+b.vy*ny,diff=bvn-avn;
+              if(!a.dragging){a.vx+=diff*nx*0.5;a.vy+=diff*ny*0.5;}
+              if(!b.dragging){b.vx-=diff*nx*0.5;b.vy-=diff*ny*0.5;}
+            }
+          }
+        }
+        nodes.forEach(n => {
+          if(n.dragging) return;
+          const sp=Math.sqrt(n.vx*n.vx+n.vy*n.vy);
+          if(sp<SPEED_FLOOR){const boost=SPEED_FLOOR/(sp||0.001);n.vx*=boost;n.vy*=boost;}
+          const sp2=Math.sqrt(n.vx*n.vx+n.vy*n.vy);
+          if(sp2>2.6){n.vx*=2.6/sp2;n.vy*=2.6/sp2;}
+          n.el.style.transform=`translate3d(${n.x}px,${n.y}px,0)`;
+        });
+        drawLines();
+        if(frame.closest('.page.active')) requestAnimationFrame(step);
+        else { window._archNetworkRunning=false; }
+      }
+
+      const NS='http://www.w3.org/2000/svg';
+      const defs=document.createElementNS(NS,'defs');
+      svg.appendChild(defs);
+      const grad=document.createElementNS(NS,'linearGradient');
+      grad.setAttribute('id','archGrad');
+      grad.innerHTML=`<stop offset="0%" stop-color="#5ee0c0" stop-opacity="0.0"/><stop offset="50%" stop-color="#9fb4ff" stop-opacity="0.55"/><stop offset="100%" stop-color="#ff6f9c" stop-opacity="0.0"/>`;
+      defs.appendChild(grad);
+      const edgePaths=ringEdges.map(()=>{
+        const p=document.createElementNS(NS,'path');
+        p.setAttribute('stroke','url(#archGrad)');p.setAttribute('stroke-width','1.4');
+        p.setAttribute('fill','none');p.setAttribute('stroke-linecap','round');
+        svg.appendChild(p); return p;
+      });
+      const pulses=ringEdges.map(()=>{
+        const c=document.createElementNS(NS,'circle');
+        c.setAttribute('r','2.6');c.setAttribute('fill','#eef0f3');
+        c.style.filter='drop-shadow(0 0 4px rgba(255,255,255,0.8))';
+        svg.appendChild(c); return {el:c,t:Math.random()};
+      });
+      function drawLines(){
+        ringEdges.forEach((edge,idx)=>{
+          const a=nodes[edge[0]],b=nodes[edge[1]];
+          const ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
+          const mx=(ax+bx)/2,my=(ay+by)/2,dx=bx-ax,dy=by-ay;
+          const len=Math.sqrt(dx*dx+dy*dy)||1,nx=-dy/len,ny=dx/len;
+          const bend=18*Math.sin(idx*1.7);
+          edgePaths[idx].setAttribute('d',`M ${ax} ${ay} Q ${mx+nx*bend} ${my+ny*bend} ${bx} ${by}`);
+          const p=pulses[idx];
+          p.t+=0.0035+idx*0.0002; if(p.t>1)p.t-=1;
+          const t=p.t,cx2=(1-t)*(1-t)*ax+2*(1-t)*t*(mx+nx*bend)+t*t*bx;
+          const cy2=(1-t)*(1-t)*ay+2*(1-t)*t*(my+ny*bend)+t*t*by;
+          p.el.setAttribute('cx',cx2);p.el.setAttribute('cy',cy2);
+        });
+      }
+      nodes.forEach(n=>{
+        n.el.style.cursor='grab';
+        let dragging=false,startPX=0,startPY=0,startX=0,startY=0,lastPX=0,lastPY=0,lastT=0,vEstX=0,vEstY=0;
+        n.el.addEventListener('pointerdown',e=>{
+          nodes.forEach(m=>m.el.classList.remove('arch-active'));
+          n.el.classList.add('arch-active');
+          dragging=true;n.dragging=true;n.el.style.cursor='grabbing';
+          n.el.setPointerCapture(e.pointerId);
+          startPX=e.clientX;startPY=e.clientY;startX=n.x;startY=n.y;
+          lastPX=e.clientX;lastPY=e.clientY;lastT=performance.now();vEstX=0;vEstY=0;n.vx=0;n.vy=0;
+        });
+        n.el.addEventListener('pointermove',e=>{
+          if(!dragging)return;
+          const now=performance.now(),dt=Math.max(now-lastT,1);
+          n.x=Math.max(6,Math.min(W-n.w-6,startX+(e.clientX-startPX)));
+          n.y=Math.max(6,Math.min(H-n.h-6,startY+(e.clientY-startPY)));
+          vEstX=(e.clientX-lastPX)/dt*16;vEstY=(e.clientY-lastPY)/dt*16;
+          lastPX=e.clientX;lastPY=e.clientY;lastT=now;
+        });
+        function release(e){
+          if(!dragging)return;
+          dragging=false;n.dragging=false;n.el.style.cursor='grab';
+          try{n.el.releasePointerCapture(e.pointerId);}catch(err){}
+          const MAXV=5.5;
+          n.vx=Math.max(-MAXV,Math.min(MAXV,vEstX));
+          n.vy=Math.max(-MAXV,Math.min(MAXV,vEstY));
+        }
+        n.el.addEventListener('pointerup',release);
+        n.el.addEventListener('pointercancel',release);
+      });
+      window.addEventListener('resize',()=>{
+        const nW=frame.clientWidth,nH=frame.clientHeight;
+        nodes.forEach(n=>{n.x=Math.max(6,Math.min(nW-n.w-6,n.x*(nW/W)));n.y=Math.max(6,Math.min(nH-n.h-6,n.y*(nH/H)));});
+        W=nW;H=nH;svg.setAttribute('width',W);svg.setAttribute('height',H);
+      });
+      window._archNetworkRunning=true;
+      requestAnimationFrame(step);
+    }
+
+    /* ---- Toolbar toggle logic ---- */
+    let networkInited=false;
+    const btnNetwork=document.getElementById('archiveNetwork');
+    const btnList=document.getElementById('archiveListBtn');
+    const networkView=document.getElementById('archiveNetwork-view');
+    const listView=document.getElementById('archiveListView');
+    const filters=document.querySelectorAll('.arch-filter');
+
+    function showNetwork(){
+      networkView.style.display='block';
+      listView.style.display='none';
+      document.getElementById('archiveFilters').style.visibility='hidden';
+      btnNetwork.classList.add('active');
+      btnList.classList.remove('active');
+      if(!networkInited){ initNetwork(); networkInited=true; }
+      else if(!window._archNetworkRunning){
+        window._archNetworkRunning=true;
+        requestAnimationFrame(function step(){ /* loop will self-restart via flag */ });
+      }
+    }
+
+    function showList(){
+      networkView.style.display='none';
+      listView.style.display='block';
+      document.getElementById('archiveFilters').style.visibility='visible';
+      btnList.classList.add('active');
+      btnNetwork.classList.remove('active');
+    }
+
+    btnNetwork.addEventListener('click', showNetwork);
+    btnList.addEventListener('click', showList);
+
+    /* Category filter */
+    filters.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        filters.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat=btn.dataset.cat;
+        document.querySelectorAll('.arch-list-item').forEach(row=>{
+          row.style.display=(cat==='all'||row.dataset.cat.includes(cat))?'grid':'none';
+        });
+      });
+    });
+
+    /* Auto-init when archive page becomes active */
+    const archivePage=document.getElementById('page-archive');
+    const observer=new MutationObserver(()=>{
+      if(archivePage.classList.contains('active')&&!networkInited){
+        showNetwork();
+      }
+    });
+    observer.observe(archivePage,{attributes:true,attributeFilter:['class']});
+    if(archivePage.classList.contains('active')) showNetwork();
+  })();
+  </script>
+
+  <script>
+  /* ---- Glass Video Player ---- */
+  (function(){
+    const video = document.getElementById('video-player');
+    const playerContainer = document.getElementById('video-player-container');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    if (!video || !playerContainer || !fullscreenBtn) return;
+
+    // Click video to toggle play/pause
+    video.addEventListener('click', () => {
+      if (video.paused) { video.play(); }
+      else { video.pause(); }
+    });
+
+    // Fullscreen toggle
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        playerContainer.requestFullscreen().catch(err => console.log(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  })();
+  </script>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
