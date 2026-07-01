@@ -616,7 +616,7 @@ body::after {
 }
 
 .work-item:hover {
-  transform: scale(1.02);
+  transform: none;
 }
 
 .work-item .glass-wrapper {
@@ -641,7 +641,7 @@ body::after {
   transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1), height 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.work-item.active .work-thumb {
+.work-item:hover .work-thumb {
   width: 360px;
   height: 240px;
 }
