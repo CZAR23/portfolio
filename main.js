@@ -199,6 +199,7 @@ function initHeroCanvas() {
 
 
 // ─── WORKS DRAG SCROLL ─────────────────────────────────────────────────────
+let worksHasDragged = false;
 (function initWorksDrag() {
   const wrapper = document.querySelector('.works-track-wrapper');
   if (!wrapper) return;
@@ -212,6 +213,7 @@ function initHeroCanvas() {
     wrapper.classList.add('grabbing');
     startX = e.pageX - wrapper.offsetLeft;
     scrollLeft = wrapper.scrollLeft;
+    worksHasDragged = false;
   });
   wrapper.addEventListener('mouseleave', () => {
     isDown = false;
@@ -226,6 +228,9 @@ function initHeroCanvas() {
     e.preventDefault();
     const x = e.pageX - wrapper.offsetLeft;
     const walk = (x - startX) * 1.5;
+    if (Math.abs(x - startX) > 5) {
+      worksHasDragged = true;
+    }
     wrapper.scrollLeft = scrollLeft - walk;
   });
 })();
@@ -380,24 +385,124 @@ document.querySelectorAll('.service-item').forEach(item => {
 });
 
 
+// ─── WORK DATA MAP FOR FEATURED SECTION ────────────────────────────────────
+const featuredWorksData = {
+  1: {
+    title: "MONKEYS STUDIO",
+    category: "Branding, Interface Design",
+    tags: "Brand Identity, UI/UX, Design System",
+    description: "A comprehensive digital branding and interface design project for Monkeys Studio, focusing on a minimal, bold aesthetic and a seamless user experience.",
+    images: ["pc main.png", "Fspider.png", "roboki.png"]
+  },
+  2: {
+    title: "REPULSOR",
+    category: "Motion, 3D",
+    tags: "3D Motion, Physics Simulation, WebGL",
+    description: "Repulsor explores advanced 3D motion dynamics and real-time physics simulation inside a glass-morphic virtual environment.",
+    images: ["ring2.png", "ring1.png", "ring.png"]
+  },
+  3: {
+    title: "ROTA DO NEVEIRO",
+    category: "Municipalities of Cadaval, Castanheira de Pera, and Lousã",
+    tags: "Technical SEO, Performance, CMS Integration",
+    description: "A historical and cultural route brought to life with immersive storytelling, custom interactive maps, and a high-performance CMS integration.",
+    images: ["ring1.png", "pc main.png", "sofa3.png"]
+  },
+  4: {
+    title: "MOURATO",
+    category: "Furniture Design & Creative Direction",
+    tags: "Photography, Branding, E-Commerce",
+    description: "Visual identity and high-end art direction for Mourato, a premium furniture design studio celebrating organic shapes and natural materials.",
+    images: ["sofa3.png", "ring2.png", "pc main.png"]
+  },
+  5: {
+    title: "EK STUDIO",
+    category: "Architecture & Spatial Design Atelier",
+    tags: "Interface Design, Development, Custom Layouts",
+    description: "A minimal, grid-based portfolio showcasing experimental architecture projects, using a tailored layout engine and smooth state transitions.",
+    images: ["roboki.png", "ring.png", "sofa3.png"]
+  }
+};
+
+function updateFeaturedSection(index) {
+  const data = featuredWorksData[index];
+  if (!data) return;
+
+  const section = document.getElementById('featuredWork');
+  if (!section) return;
+
+  const categoryEl = section.querySelector('.feat-category');
+  const tagsEl = section.querySelector('.feat-tags');
+  const titleEl = section.querySelector('.featured-title');
+  const descEl = section.querySelector('.featured-description');
+  const imgEls = section.querySelectorAll('.featured-images img');
+
+  const animElements = [categoryEl, tagsEl, titleEl, descEl];
+  const imgWrappers = section.querySelectorAll('.feat-img-wrapper');
+
+  animElements.forEach(el => {
+    if (el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(15px)';
+      el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    }
+  });
+
+  imgWrappers.forEach((wrap, i) => {
+    wrap.style.opacity = '0';
+    wrap.style.transform = 'translateY(25px)';
+    wrap.style.transition = `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`;
+  });
+
+  setTimeout(() => {
+    if (categoryEl) categoryEl.textContent = data.category;
+    if (tagsEl) tagsEl.textContent = data.tags;
+    if (titleEl) titleEl.textContent = data.title;
+    if (descEl) descEl.textContent = data.description;
+
+    imgEls.forEach((img, i) => {
+      if (img && data.images[i]) {
+        img.src = data.images[i];
+      }
+    });
+
+    animElements.forEach((el, i) => {
+      if (el) {
+        el.style.transition = `opacity 0.4s ease ${i * 0.05}s, transform 0.4s ease ${i * 0.05}s`;
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }
+    });
+
+    imgWrappers.forEach((wrap, i) => {
+      wrap.style.transition = `opacity 0.4s ease ${0.2 + i * 0.08}s, transform 0.4s ease ${0.2 + i * 0.08}s`;
+      wrap.style.opacity = '1';
+      wrap.style.transform = 'translateY(0)';
+    });
+  }, 300);
+}
+
 // ─── WORK ITEM CLICK ───────────────────────────────────────────────────────
-document.querySelectorAll('.work-item').forEach(item => {
+document.querySelectorAll('.work-item').forEach((item, index) => {
+  const thumbEl = item.querySelector('.work-thumb');
+  let itemIndex = index + 1;
+
+  if (thumbEl) {
+    for (let i = 1; i <= 5; i++) {
+      if (thumbEl.classList.contains(`work-thumb-${i}`)) {
+        itemIndex = i;
+        break;
+      }
+    }
+  }
+
   item.addEventListener('click', () => {
+    if (worksHasDragged) return;
+
     document.querySelectorAll('.work-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
 
-    const title = item.dataset.title;
-    const el = document.querySelector('.featured-title');
-    if (el) {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        el.textContent = title;
-        el.style.transition = 'opacity 0.4s, transform 0.4s';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, 200);
-    }
+    updateFeaturedSection(itemIndex);
   });
 });
 
