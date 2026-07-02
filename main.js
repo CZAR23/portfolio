@@ -74,6 +74,9 @@ function switchPage(pageName) {
     document.body.classList.remove('archive-mode');
   }
 
+  // Update header responsive colors
+  updateHeaderTheme();
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
   setTimeout(initRevealAnimations, 100);
 }
@@ -507,27 +510,50 @@ document.querySelectorAll('.work-item').forEach((item, index) => {
 });
 
 
-// ─── HEADER SCROLL BEHAVIOR ────────────────────────────────────────────────
-(function initHeaderScroll() {
+// ─── HEADER THEME & SCROLL BEHAVIOR ────────────────────────────────────────
+function updateHeaderTheme() {
   const header = document.getElementById('site-header');
   if (!header) return;
 
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 80) {
-      header.style.backdropFilter = 'blur(16px)';
-      header.style.webkitBackdropFilter = 'blur(16px)';
-      header.style.background = 'rgba(200, 194, 174, 0.4)';
-      header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.25)';
-      header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.03)';
-    } else {
-      header.style.backdropFilter = '';
-      header.style.webkitBackdropFilter = '';
+  const y = window.scrollY;
+  // Hero section is 100vh. The header height is 64px.
+  // The header has exited the hero section if scrollY >= viewportHeight - 64
+  const isOverHero = (currentPage === 'homepage') && (y < window.innerHeight - 64);
+
+  if (isOverHero) {
+    header.classList.add('theme-dark');
+  } else {
+    header.classList.remove('theme-dark');
+  }
+
+  // Handle background blur and color
+  if (y > 80) {
+    header.style.backdropFilter = 'blur(16px)';
+    header.style.webkitBackdropFilter = 'blur(16px)';
+    if (isOverHero) {
+      // Over hero, keep transparent to let hero background design breathe
       header.style.background = 'transparent';
       header.style.borderBottom = 'none';
       header.style.boxShadow = 'none';
+    } else {
+      // Past hero (over light background) or on other pages
+      header.style.background = 'rgba(200, 194, 174, 0.4)';
+      header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.25)';
+      header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.03)';
     }
-  });
+  } else {
+    header.style.backdropFilter = '';
+    header.style.webkitBackdropFilter = '';
+    header.style.background = 'transparent';
+    header.style.borderBottom = 'none';
+    header.style.boxShadow = 'none';
+  }
+}
+
+(function initHeaderScroll() {
+  window.addEventListener('scroll', updateHeaderTheme);
+  window.addEventListener('resize', updateHeaderTheme);
+  updateHeaderTheme(); // Initial call
 })();
 
 

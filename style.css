@@ -25,6 +25,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -36,6 +38,7 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   overflow-x: hidden;
+  width: 100%;
   cursor: none;
 }
 
@@ -329,6 +332,42 @@ body::after {
 .header-divider {
   color: rgba(58, 56, 53, 0.3);
   font-size: 14px;
+}
+
+/* Dark background theme for site header (text is light) */
+#site-header.theme-dark .logo-text {
+  color: #c8c2ae;
+}
+
+#site-header.theme-dark .logo-spinner {
+  --clr: #c8c2ae;
+  --clr-alpha: rgba(200, 194, 174, 0.08);
+}
+
+#site-header.theme-dark .nav-link {
+  color: rgba(200, 194, 174, 0.65);
+}
+
+#site-header.theme-dark .nav-link:hover,
+#site-header.theme-dark .nav-link.active {
+  color: #c8c2ae;
+}
+
+#site-header.theme-dark .nav-link.active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#site-header.theme-dark .lang-btn,
+#site-header.theme-dark .sound-btn {
+  color: #c8c2ae;
+}
+
+#site-header.theme-dark .sound-icon path {
+  stroke: #c8c2ae;
+}
+
+#site-header.theme-dark .header-divider {
+  color: rgba(200, 194, 174, 0.3);
 }
 
 /* ============================================
@@ -1658,10 +1697,10 @@ body::after {
 }
 
 /* Archive page header overrides */
-.archive-page #site-header .logo-icon rect,
-.archive-page #site-header .logo-text,
-.archive-page #site-header .nav-link,
-.archive-page #site-header .lang-btn {
+.archive-mode #site-header .logo-icon rect,
+.archive-mode #site-header .logo-text,
+.archive-mode #site-header .nav-link,
+.archive-mode #site-header .lang-btn {
   color: var(--text);
 }
 
@@ -1740,6 +1779,11 @@ body::after {
   }
 
   .section-inner {
+    padding: 0 24px;
+  }
+
+  .works-track-wrapper {
+    margin: 0 -24px;
     padding: 0 24px;
   }
 
