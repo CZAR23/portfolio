@@ -19,8 +19,11 @@
       setTimeout(() => {
         loader.classList.add('hidden');
         document.body.style.overflow = '';
+        initWavesCanvas();
         initHeroCanvas();
+        initGlassSurface();
         initRevealAnimations();
+        initFeaturedWork();
       }, 500);
     } else {
       bar.style.width = progress + '%';
@@ -41,7 +44,6 @@ document.addEventListener('mousemove', (e) => {
 // ─── NAVIGATION ────────────────────────────────────────────────────────────
 const pages = {
   homepage: document.getElementById('page-homepage'),
-  manifesto: document.getElementById('page-manifesto'),
   archive: document.getElementById('page-archive'),
 };
 
@@ -66,6 +68,25 @@ function switchPage(pageName) {
 
   currentPage = pageName;
 
+  // Update footer navigation button text & target
+  const footerBtn = document.getElementById('footerNavBtn');
+  if (footerBtn) {
+    const contentEl = footerBtn.querySelector('.glass-surface__content');
+    if (pageName === 'archive') {
+      if (contentEl) {
+        contentEl.innerHTML = 'HOMEPAGE'.split('').map(char => '<span>' + char + '</span>').join('');
+      }
+      footerBtn.dataset.page = 'homepage';
+      footerBtn.setAttribute('data-page', 'homepage');
+    } else {
+      if (contentEl) {
+        contentEl.innerHTML = 'ARCHIVE'.split('').map(char => '<span>' + char + '</span>').join('');
+      }
+      footerBtn.dataset.page = 'archive';
+      footerBtn.setAttribute('data-page', 'archive');
+    }
+  }
+
   // archive page body tweaks
   if (pageName === 'archive') {
     document.body.classList.add('archive-mode');
@@ -88,7 +109,294 @@ navLinks.forEach(link => {
   });
 });
 
-document.getElementById('nav-home').addEventListener('click', () => switchPage('homepage'));
+const navHome = document.getElementById('nav-home');
+if (navHome) {
+  navHome.addEventListener('click', () => switchPage('homepage'));
+}
+
+
+// ─── HERO WAVES CANVAS (Glowing Gold Ribbons) ──────────────────────────────
+function initWavesCanvas() {
+  const canvas = document.getElementById('wavesCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let frameId;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 5 layered ribbons: each is a glowing sine curve with its own height, amplitude, frequency, and drift speed
+  const ribbons = [
+    {
+      yBase: 0.50, // Center line (percentage of canvas height)
+      amp: 45,     // Amplitude
+      freq1: 0.0012,
+      freq2: 0.0028,
+      speed1: 0.0012,
+      speed2: 0.0008,
+      phase1: Math.random() * Math.PI * 2,
+      phase2: Math.random() * Math.PI * 2,
+      lineWidth: 2.2,
+      stroke: 'rgba(235, 195, 110, 0.45)', // Warm gold
+      glowColor: 'rgba(235, 180, 80, 0.55)',
+      glowBlur: 18
+    },
+    {
+      yBase: 0.47,
+      amp: 65,
+      freq1: 0.0008,
+      freq2: 0.0018,
+      speed1: -0.0007,
+      speed2: 0.0005,
+      phase1: Math.random() * Math.PI * 2,
+      phase2: Math.random() * Math.PI * 2,
+      lineWidth: 1.8,
+      stroke: 'rgba(212, 175, 55, 0.35)',
+      glowColor: 'rgba(212, 175, 55, 0.45)',
+      glowBlur: 25
+    },
+    {
+      yBase: 0.53,
+      amp: 35,
+      freq1: 0.0018,
+      freq2: 0.0035,
+      speed1: 0.0018,
+      speed2: -0.0012,
+      phase1: Math.random() * Math.PI * 2,
+      phase2: Math.random() * Math.PI * 2,
+      lineWidth: 1.5,
+      stroke: 'rgba(255, 215, 0, 0.4)',
+      glowColor: 'rgba(255, 200, 0, 0.5)',
+      glowBlur: 12
+    },
+    {
+      yBase: 0.44,
+      amp: 80,
+      freq1: 0.0006,
+      freq2: 0.0013,
+      speed1: -0.0004,
+      speed2: -0.0006,
+      phase1: Math.random() * Math.PI * 2,
+      phase2: Math.random() * Math.PI * 2,
+      lineWidth: 2.6,
+      stroke: 'rgba(197, 160, 89, 0.28)',
+      glowColor: 'rgba(197, 160, 89, 0.35)',
+      glowBlur: 30
+    },
+    {
+      yBase: 0.56,
+      amp: 25,
+      freq1: 0.0025,
+      freq2: 0.005,
+      speed1: 0.0025,
+      speed2: 0.0018,
+      phase1: Math.random() * Math.PI * 2,
+      phase2: Math.random() * Math.PI * 2,
+      lineWidth: 1.2,
+      stroke: 'rgba(240, 200, 120, 0.45)',
+      glowColor: 'rgba(240, 190, 90, 0.55)',
+      glowBlur: 10
+    }
+  ];
+
+  function draw() {
+    frameId = requestAnimationFrame(draw);
+
+    // Cheap performance early exit when not on homepage
+    if (currentPage !== 'homepage') return;
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const isMobile = window.innerWidth <= 900;
+
+    ctx.clearRect(0, 0, W, H);
+
+    ribbons.forEach(ribbon => {
+      // Independent phase updates for dynamic drifting
+      ribbon.phase1 += ribbon.speed1;
+      ribbon.phase2 += ribbon.speed2;
+
+      const baseline = isMobile ? W * ribbon.yBase : H * ribbon.yBase;
+      const currentAmp = isMobile ? ribbon.amp * 0.6 : ribbon.amp;
+
+      ctx.beginPath();
+      if (isMobile) {
+        // Vertical waves: iterate y from 0 to H
+        for (let y = 0; y <= H; y += 3) {
+          const envelope = Math.sin((y / H) * Math.PI);
+          const xOffset = (
+            Math.sin(y * ribbon.freq1 + ribbon.phase1) * currentAmp +
+            Math.cos(y * ribbon.freq2 + ribbon.phase2) * (currentAmp * 0.4)
+          ) * envelope;
+
+          if (y === 0) {
+            ctx.moveTo(baseline + xOffset, y);
+          } else {
+            ctx.lineTo(baseline + xOffset, y);
+          }
+        }
+      } else {
+        // Horizontal waves: iterate x from 0 to W
+        for (let x = 0; x <= W; x += 3) {
+          const envelope = Math.sin((x / W) * Math.PI);
+          const yOffset = (
+            Math.sin(x * ribbon.freq1 + ribbon.phase1) * currentAmp +
+            Math.cos(x * ribbon.freq2 + ribbon.phase2) * (currentAmp * 0.4)
+          ) * envelope;
+
+          if (x === 0) {
+            ctx.moveTo(x, baseline + yOffset);
+          } else {
+            ctx.lineTo(x, baseline + yOffset);
+          }
+        }
+      }
+
+      ctx.shadowColor = ribbon.glowColor;
+      ctx.shadowBlur = ribbon.glowBlur;
+      ctx.strokeStyle = ribbon.stroke;
+      ctx.lineWidth = ribbon.lineWidth * 2.2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Pass 2: Sharp inner core
+      ctx.shadowBlur = ribbon.glowBlur * 0.4;
+      ctx.strokeStyle = 'rgba(255, 240, 210, 0.85)';
+      ctx.lineWidth = ribbon.lineWidth * 0.65;
+      ctx.stroke();
+    });
+
+    // Reset shadow states
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+  }
+
+  draw();
+}
+
+
+// ─── GLASS SURFACE COMPONENT (Vanilla Implementation of React Bits) ────────
+function initGlassSurface() {
+  const container = document.getElementById('footerNavBtn');
+  if (!container) return;
+
+  const feImage = document.getElementById('glass-fe-image-footer');
+  const redChannel = document.getElementById('glass-red-footer');
+  const greenChannel = document.getElementById('glass-green-footer');
+  const blueChannel = document.getElementById('glass-blue-footer');
+  const gaussianBlur = document.getElementById('glass-blur-footer');
+
+  // Config parameters mirroring React Bits component
+  const borderRadius = 25;
+  const borderWidth = 0.07;
+  const brightness = 50;
+  const opacity = 0.93;
+  const blur = 11;
+  const displace = 0.7; // output blur (stdDeviation)
+  const distortionScale = -180;
+  const redOffset = 0;
+  const greenOffset = 10;
+  const blueOffset = 20;
+  const xChannel = 'R';
+  const yChannel = 'G';
+  const mixBlendMode = 'difference';
+
+  const filterId = 'glass-filter-footer';
+  const redGradId = 'red-grad-footer';
+  const blueGradId = 'blue-grad-footer';
+
+  function generateDisplacementMap() {
+    const rect = container.getBoundingClientRect();
+    const actualWidth = rect.width || 140;
+    const actualHeight = rect.height || 50;
+    const edgeSize = Math.min(actualWidth, actualHeight) * (borderWidth * 0.5);
+
+    const svgContent = `
+      <svg viewBox="0 0 ${actualWidth} ${actualHeight}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="${redGradId}" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#0000"/>
+            <stop offset="100%" stop-color="red"/>
+          </linearGradient>
+          <linearGradient id="${blueGradId}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#0000"/>
+            <stop offset="100%" stop-color="blue"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" fill="black"></rect>
+        <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${redGradId})" />
+        <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${blueGradId})" style="mix-blend-mode: ${mixBlendMode}" />
+        <rect x="${edgeSize}" y="${edgeSize}" width="${actualWidth - edgeSize * 2}" height="${actualHeight - edgeSize * 2}" rx="${borderRadius}" fill="hsl(0 0% ${brightness}% / ${opacity})" style="filter:blur(${blur}px)" />
+      </svg>
+    `;
+
+    return `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
+  }
+
+  function updateDisplacementMap() {
+    if (feImage) {
+      feImage.setAttribute('href', generateDisplacementMap());
+    }
+  }
+
+  // Set initial scales and channels
+  if (redChannel) {
+    redChannel.setAttribute('scale', (distortionScale + redOffset).toString());
+    redChannel.setAttribute('xChannelSelector', xChannel);
+    redChannel.setAttribute('yChannelSelector', yChannel);
+  }
+  if (greenChannel) {
+    greenChannel.setAttribute('scale', (distortionScale + greenOffset).toString());
+    greenChannel.setAttribute('xChannelSelector', xChannel);
+    greenChannel.setAttribute('yChannelSelector', yChannel);
+  }
+  if (blueChannel) {
+    blueChannel.setAttribute('scale', (distortionScale + blueOffset).toString());
+    blueChannel.setAttribute('xChannelSelector', xChannel);
+    blueChannel.setAttribute('yChannelSelector', yChannel);
+  }
+  if (gaussianBlur) {
+    gaussianBlur.setAttribute('stdDeviation', displace.toString());
+  }
+
+  updateDisplacementMap();
+
+  // ResizeObserver for dynamic adjustment
+  try {
+    const resizeObserver = new ResizeObserver(() => {
+      setTimeout(updateDisplacementMap, 0);
+    });
+    resizeObserver.observe(container);
+  } catch (e) {
+    window.addEventListener('resize', updateDisplacementMap);
+  }
+
+  // SVG support detection
+  function checkSvgSupport() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return false;
+    }
+
+    const isWebkit = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    const isFirefox = /Firefox/.test(navigator.userAgent);
+
+    if (isWebkit || isFirefox) {
+      return false;
+    }
+
+    const div = document.createElement('div');
+    div.style.backdropFilter = `url(#${filterId})`;
+    return div.style.backdropFilter !== '';
+  }
+
+  const svgSupported = checkSvgSupport();
+  container.classList.add(svgSupported ? 'glass-surface--svg' : 'glass-surface--fallback');
+}
 
 
 // ─── HERO CANVAS (Radiating Lines + Keywords) ──────────────────────────────
@@ -148,6 +456,9 @@ function initHeroCanvas() {
   function draw(t) {
     frameId = requestAnimationFrame(draw);
 
+    // Cheap performance early exit when not on homepage
+    if (currentPage !== 'homepage') return;
+
     // Ease opacity in
     if (opacity < 1) opacity = Math.min(1, opacity + 0.01);
 
@@ -159,42 +470,62 @@ function initHeroCanvas() {
 
     const W = canvas.width;
     const H = canvas.height;
-    const cx = W / 2;
-    const cy = H / 2;
+
+    // Draw relative to custom cursor coordinates
+    const curX = animCurrent.x * W;
+    const curY = animCurrent.y * H;
 
     ctx.clearRect(0, 0, W, H);
-    ctx.globalAlpha = opacity * 0.85;
-
-    const lineColor = 'rgba(58,56,53,0.18)';
-    const textColor = 'rgba(58,56,53,0.72)';
 
     kwStates.forEach((kw, i) => {
       const t_phase = t * 0.0003 * kw.speed + kw.phase;
       const px = kw.ax * W + Math.sin(t_phase) * kw.offsetX;
       const py = kw.ay * H + Math.cos(t_phase * 0.7) * kw.offsetY;
 
-      // Line from center to keyword
-      const grad = ctx.createLinearGradient(cx, cy, px, py);
-      grad.addColorStop(0, 'rgba(58,56,53,0.0)');
-      grad.addColorStop(0.3, lineColor);
-      grad.addColorStop(1, lineColor);
+      // Distance from cursor to keyword
+      const dx = px - curX;
+      const dy = py - curY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(px, py);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 0.6;
-      ctx.stroke();
+      // Proximity reveal factor: 1 when close, fading out to 0 at 350px away
+      const maxDistance = 350;
+      const proximity = Math.max(0, 1 - dist / maxDistance);
 
-      // Keyword text
+      // Keyword dynamic opacity: very faint when far, bright when close
+      const kwOpacity = 0.05 + proximity * 0.7; // goes from 0.05 to 0.75
+
+      // Line radiating from custom cursor to keyword
+      if (proximity > 0) {
+        const lineOpacity = proximity * 0.22;
+        const grad = ctx.createLinearGradient(curX, curY, px, py);
+        grad.addColorStop(0, 'rgba(200, 194, 174, 0.0)');
+        grad.addColorStop(0.3, `rgba(200, 194, 174, ${lineOpacity * 0.4})`);
+        grad.addColorStop(1, `rgba(200, 194, 174, ${lineOpacity})`);
+
+        ctx.beginPath();
+        ctx.moveTo(curX, curY);
+        ctx.lineTo(px, py);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+
+      // Keyword text (ghost text)
+      ctx.save();
       ctx.font = `italic 300 13px 'Barlow', sans-serif`;
-      ctx.fillStyle = textColor;
+
+      // Glow keywords when cursor is in proximity
+      if (proximity > 0.4) {
+        ctx.shadowColor = 'rgba(200, 194, 174, 0.6)';
+        ctx.shadowBlur = 8;
+      }
+
+      ctx.fillStyle = `rgba(200, 194, 174, ${kwOpacity * opacity})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(kw.label, px, py);
+      ctx.restore();
     });
-
-    ctx.globalAlpha = 1;
   }
 
   requestAnimationFrame((t) => draw(t));
@@ -259,6 +590,7 @@ let worksHasDragged = false;
 // ─── LANGUAGE TOGGLE ───────────────────────────────────────────────────────
 (function initLang() {
   const btn = document.getElementById('langToggle');
+  if (!btn) return;
   let isEN = false;
   btn.addEventListener('click', () => {
     isEN = !isEN;
@@ -270,6 +602,7 @@ let worksHasDragged = false;
 // ─── SOUND TOGGLE ──────────────────────────────────────────────────────────
 (function initSound() {
   const btn = document.getElementById('soundToggle');
+  if (!btn) return;
   const wave1 = btn.querySelector('.sound-wave-1');
   const wave2 = btn.querySelector('.sound-wave-2');
   let muted = false;
@@ -395,7 +728,7 @@ const featuredWorksData = {
     category: "Branding, Interface Design",
     tags: "Brand Identity, UI/UX, Design System",
     description: "A comprehensive digital branding and interface design project for Monkeys Studio, focusing on a minimal, bold aesthetic and a seamless user experience.",
-    images: ["pc main.png", "Fspider.png", "roboki.png"]
+    images: ["pc.png", "Fspider.png", "roboki.png"]
   },
   2: {
     title: "REPULSOR",
@@ -405,11 +738,11 @@ const featuredWorksData = {
     images: ["ring2.png", "ring1.png", "ring.png"]
   },
   3: {
-    title: "ROTA DO NEVEIRO",
-    category: "Municipalities of Cadaval, Castanheira de Pera, and Lousã",
-    tags: "Technical SEO, Performance, CMS Integration",
-    description: "A historical and cultural route brought to life with immersive storytelling, custom interactive maps, and a high-performance CMS integration.",
-    images: ["ring1.png", "pc main.png", "sofa3.png"]
+    title: "WIFTY",
+    category: "Game Development",
+    tags: "UNITY, GAME DESIGN, LEVEL DESIGN",
+    description: "WIFTY is a 2D pixel-art puzzle platformer inspired by classic games like Super Mario, but with a stronger focus on strategic gameplay and challenging level design. Players must navigate through handcrafted levels filled with dangerous enemies, deadly traps, hidden paths, and environmental puzzles to reach the exit. The game introduces a unique position-swapping ability, allowing players to instantly swap places with enemies to solve puzzles, escape hazards, and discover creative ways to progress. Combined with key-and-door mechanics, precise platforming, and increasingly complex challenges, WIFTY delivers an engaging experience that rewards both quick reflexes and smart thinking.",
+    images: ["ring1.png", "download.mp4", "wifty2.png"]
   },
   4: {
     title: "MOURATO",
@@ -438,10 +771,8 @@ function updateFeaturedSection(index) {
   const tagsEl = section.querySelector('.feat-tags');
   const titleEl = section.querySelector('.featured-title');
   const descEl = section.querySelector('.featured-description');
-  const imgEls = section.querySelectorAll('.featured-images img');
 
   const animElements = [categoryEl, tagsEl, titleEl, descEl];
-  const imgWrappers = section.querySelectorAll('.feat-img-wrapper');
 
   animElements.forEach(el => {
     if (el) {
@@ -451,7 +782,8 @@ function updateFeaturedSection(index) {
     }
   });
 
-  imgWrappers.forEach((wrap, i) => {
+  const oldImgWrappers = section.querySelectorAll('.feat-img-wrapper');
+  oldImgWrappers.forEach((wrap, i) => {
     wrap.style.opacity = '0';
     wrap.style.transform = 'translateY(25px)';
     wrap.style.transition = `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`;
@@ -463,11 +795,25 @@ function updateFeaturedSection(index) {
     if (titleEl) titleEl.textContent = data.title;
     if (descEl) descEl.textContent = data.description;
 
-    imgEls.forEach((img, i) => {
-      if (img && data.images[i]) {
-        img.src = data.images[i];
-      }
-    });
+    const imagesContainer = section.querySelector('.featured-images');
+    if (imagesContainer) {
+      imagesContainer.innerHTML = '';
+      data.images.forEach((src, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'feat-img-wrapper';
+        wrap.style.opacity = '0';
+        wrap.style.transform = 'translateY(25px)';
+        wrap.style.transition = `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`;
+
+        const isVideo = src.toLowerCase().endsWith('.mp4');
+        if (isVideo) {
+          wrap.innerHTML = `<video class="feat-img" src="${src}" autoplay loop muted playsinline></video>`;
+        } else {
+          wrap.innerHTML = `<img class="feat-img" src="${src}" alt="Feature ${i + 1}" />`;
+        }
+        imagesContainer.appendChild(wrap);
+      });
+    }
 
     animElements.forEach((el, i) => {
       if (el) {
@@ -477,7 +823,9 @@ function updateFeaturedSection(index) {
       }
     });
 
-    imgWrappers.forEach((wrap, i) => {
+    const newImgWrappers = section.querySelectorAll('.feat-img-wrapper');
+    newImgWrappers.forEach((wrap, i) => {
+      wrap.offsetHeight; // trigger reflow
       wrap.style.transition = `opacity 0.4s ease ${0.2 + i * 0.08}s, transform 0.4s ease ${0.2 + i * 0.08}s`;
       wrap.style.opacity = '1';
       wrap.style.transform = 'translateY(0)';
@@ -508,6 +856,24 @@ document.querySelectorAll('.work-item').forEach((item, index) => {
     updateFeaturedSection(itemIndex);
   });
 });
+
+// ─── INITIALIZE ACTIVE FEATURED WORK ───────────────────────────────────────
+function initFeaturedWork() {
+  const activeItem = document.querySelector('.work-item.active');
+  if (activeItem) {
+    const thumbEl = activeItem.querySelector('.work-thumb');
+    let itemIndex = 3; // fallback default to ROTA DO NEVEIRO
+    if (thumbEl) {
+      for (let i = 1; i <= 5; i++) {
+        if (thumbEl.classList.contains(`work-thumb-${i}`)) {
+          itemIndex = i;
+          break;
+        }
+      }
+    }
+    updateFeaturedSection(itemIndex);
+  }
+}
 
 
 // ─── HEADER THEME & SCROLL BEHAVIOR ────────────────────────────────────────
